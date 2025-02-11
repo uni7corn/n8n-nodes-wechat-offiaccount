@@ -14,7 +14,7 @@ const resourceBuilder = new ResourceBuilder();
 ModuleLoadUtils.loadModules(__dirname, 'resource/*.js').forEach((resource) => {
 	resourceBuilder.addResource(resource);
 	ModuleLoadUtils.loadModules(__dirname, `resource/${resource.value}/*.js`).forEach((operate: ResourceOperations) => {
-		resourceBuilder.addOperateT(resource.value, operate);
+		resourceBuilder.addOperate(resource.value, operate);
 	})
 });
 
