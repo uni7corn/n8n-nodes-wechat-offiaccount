@@ -15,8 +15,6 @@ class ModuleLoadUtils {
 			modules.push(module.default);
 		}
 
-		console.log('modules', modules);
-
 		return modules;
 	}
 }

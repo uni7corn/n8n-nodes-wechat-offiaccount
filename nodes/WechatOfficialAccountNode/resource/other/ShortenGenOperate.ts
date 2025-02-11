@@ -3,7 +3,7 @@ import RequestUtils from '../../../help/utils/RequestUtils';
 import { ResourceOperations } from '../../../help/type/IResource';
 
 const ShortenGenOperate: ResourceOperations = {
-	name: '生成短key',
+	name: '生成短Key',
 	value: 'other:shorten:gen',
 	description: '将长信息转换为短key',
 	options: [

@@ -39,7 +39,7 @@ const QRCodeGenerateOperate: ResourceOperations = {
 	],
 	async call(this: IExecuteFunctions, index: number): Promise<IDataObject> {
 		const actionName = this.getNodeParameter('action_name', index) as string;
-		const expireSeconds = this.getNodeParameter('expire_seconds', index) as number;
+		const expireSeconds = this.getNodeParameter('expire_seconds', index, null) as number;
 		const sceneStr = this.getNodeParameter('scene_str', index) as string;
 
 		const body: IDataObject = {

@@ -1,11 +1,14 @@
 import ModuleLoadUtils from "../nodes/help/utils/ModuleLoadUtils";
 import ResourceBuilder from "../nodes/help/builder/ResourceBuilder";
+import {ResourceOperations} from "../nodes/help/type/IResource";
 
 const resourceBuilder = new ResourceBuilder();
 
-const resources = ModuleLoadUtils.loadModules(__dirname + "/../dist/nodes/WechatWorkNode", "resource/*.js");
-resources.forEach((resource) => {
-	resource.init(resourceBuilder);
+ModuleLoadUtils.loadModules(__dirname + "/../dist/nodes/WechatOfficialAccountNode", 'resource/*.js').forEach((resource) => {
+	resourceBuilder.addResource(resource);
+	ModuleLoadUtils.loadModules(__dirname + "/../dist/nodes/WechatOfficialAccountNode", `resource/${resource.value}/*.js`).forEach((operate: ResourceOperations) => {
+		resourceBuilder.addOperateT(resource.value, operate);
+	})
 });
 
 let txt = '';
