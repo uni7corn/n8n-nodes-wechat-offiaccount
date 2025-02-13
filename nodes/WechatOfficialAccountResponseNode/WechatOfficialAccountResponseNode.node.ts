@@ -72,7 +72,7 @@ export class WechatOfficialAccountResponseNode implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const parentNodes = this.getParentNodes(this.getNode().name);
 		const trigger = parentNodes.find(
-			(node) => node.type === 'CUSTOM.wechatOfficialAccountTrigger',
+			(node) => node.type.includes('wechatOfficialAccountTrigger'),
 		) as NodeTypeAndVersion;
 		if (!trigger) {
 			throw new NodeOperationError(

@@ -120,21 +120,33 @@ export class WechatOfficialAccountTrigger implements INodeType {
 					query: query,
 				});
 			}
+
 			// 解密消息体"Encrypt"密文
 			const aesKey = this.getNodeParameter('aesKey') as string;
 			if (!aesKey) {
 				throw new NodeOperationError(this.getNode(), 'aesKey is required');
 			}
 
-			const decryptObject = WechatMsgSignUtils.decrypt(body.xml.Encrypt, aesKey);
-			body.encrypt = body.xml.Encrypt;
-			body.xml = decryptObject.xml;
-			body.appId = decryptObject.appId;
+			try {
+				const decryptObject = WechatMsgSignUtils.decrypt(body.xml.encrypt, aesKey);
 
-			workflowStaticData.encrypt_type = encrypt_type;
-			workflowStaticData.token = token;
-			workflowStaticData.aesKey = aesKey;
-			workflowStaticData.appId = decryptObject.appId;
+				body.xml = {
+					...decryptObject.xml,
+					encrypt: body.xml.encrypt
+				};
+				body.appId = decryptObject.appId;
+
+				workflowStaticData.encrypt_type = encrypt_type;
+				workflowStaticData.token = token;
+				workflowStaticData.aesKey = aesKey;
+				workflowStaticData.appId = decryptObject.appId;
+
+			}catch (error) {
+				throw new NodeOperationError(this.getNode(), {
+					message: 'Decrypt Msg Error',
+					error: error,
+				});
+			}
 		}
 		workflowStaticData.signatureType = signatureType;
 
@@ -144,7 +156,7 @@ export class WechatOfficialAccountTrigger implements INodeType {
 		};
 
 		return {
-			webhookResponse: {},
+			noWebhookResponse: true,
 			workflowData: [this.helpers.returnJsonArray(data)],
 		};
 	}

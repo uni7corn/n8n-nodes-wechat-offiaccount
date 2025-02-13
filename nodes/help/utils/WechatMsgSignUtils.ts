@@ -113,7 +113,6 @@ class WechatMsgSignUtils {
 		// 去除16位随机数
 		const content = deciphered.slice(16)
 		const length = content.slice(0, 4).readUInt32BE(0)
-
 		const message = content.slice(4, length + 4).toString()
 
 		const xmlObject: any = xmlConvert.xml2js(message, {
