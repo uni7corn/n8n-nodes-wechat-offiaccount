@@ -89,7 +89,7 @@ export class WechatOfficialAccountResponseNode implements INodeType {
 			throw new NodeOperationError(this.getNode(), 'No workflow data found');
 		}
 
-		const signatureType = workflowData.signatureType as string;
+		const signatureType = workflowData?.signatureType as string;
 		let body: any;
 		let data: any;
 		if (signatureType === 'aes'){
@@ -126,6 +126,8 @@ export class WechatOfficialAccountResponseNode implements INodeType {
 			statusCode: 200,
 			body: body,
 		};
+
+		console.log('sendResponse', response);
 
 		this.sendResponse(response);
 

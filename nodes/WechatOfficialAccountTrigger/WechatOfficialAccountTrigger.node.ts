@@ -1,6 +1,6 @@
-import { INodeType, INodeTypeDescription, NodeOperationError } from 'n8n-workflow';
+import {INodeType, INodeTypeDescription, NodeOperationError} from 'n8n-workflow';
 import { IWebhookFunctions, IWebhookResponseData } from 'n8n-workflow/dist/Interfaces';
-import WechatMsgSignUtils from '../help/utils/WechatMsgSignUtils';
+import WechatMsgSignUtils from "../help/utils/WechatMsgSignUtils";
 
 export class WechatOfficialAccountTrigger implements INodeType {
 	description: INodeTypeDescription = {
@@ -77,16 +77,24 @@ export class WechatOfficialAccountTrigger implements INodeType {
 		],
 	};
 
-
 	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
 		const query: any = this.getQueryData();
 		const request = this.getRequestObject();
-		const response = this.getResponseObject();
 		const body = request.body;
 		const token = this.getNodeParameter('token') as string;
 		const signatureType = this.getNodeParameter('signatureType') as string;
 
+		if (!query.signature || !query.timestamp || !query.nonce) {
+			console.log('Invalid signature empty');
+			throw new NodeOperationError(this.getNode(), {
+				message: 'Invalid signature',
+				query: query,
+			});
+		}
+
 		if (!WechatMsgSignUtils.checkSignature(token, query.signature, query.timestamp, query.nonce)) {
+			console.log('Invalid signature false');
+
 			throw new NodeOperationError(this.getNode(), {
 				message: 'Invalid signature',
 				query: query,
@@ -95,13 +103,14 @@ export class WechatOfficialAccountTrigger implements INodeType {
 
 		// hi response
 		if (request.method === 'GET' && query.echostr) {
+			const response = this.getResponseObject();
 			response.send(query.echostr);
 			return {
 				noWebhookResponse: true,
 			};
 		}
 
-		let workflowStaticData = this.getWorkflowStaticData('global')
+		let workflowStaticData = this.getWorkflowStaticData('global');
 
 		// Encrypt message
 		const encrypt_type = query.encrypt_type;
@@ -132,7 +141,7 @@ export class WechatOfficialAccountTrigger implements INodeType {
 
 				body.xml = {
 					...decryptObject.xml,
-					encrypt: body.xml.encrypt
+					encrypt: body.xml.encrypt,
 				};
 				body.appId = decryptObject.appId;
 
@@ -140,23 +149,22 @@ export class WechatOfficialAccountTrigger implements INodeType {
 				workflowStaticData.token = token;
 				workflowStaticData.aesKey = aesKey;
 				workflowStaticData.appId = decryptObject.appId;
-
-			}catch (error) {
+			} catch (error) {
 				throw new NodeOperationError(this.getNode(), {
 					message: 'Decrypt Msg Error',
 					error: error,
 				});
 			}
 		}
+
 		workflowStaticData.signatureType = signatureType;
 
 		const data: any = {
 			query,
-			body: body,
+			body,
 		};
 
 		return {
-			noWebhookResponse: true,
 			workflowData: [this.helpers.returnJsonArray(data)],
 		};
 	}
