@@ -1,4 +1,4 @@
-import {IDataObject, IExecuteFunctions} from 'n8n-workflow';
+import {IDataObject, IExecuteFunctions, NodeOperationError} from 'n8n-workflow';
 
 class NodeUtils {
 
@@ -18,12 +18,12 @@ class NodeUtils {
 		return result;
 	}
 
-	static buildUploadFileData(this: IExecuteFunctions, inputDataFieldName: string, index: number = 0): any {
+	static async buildUploadFileData(this: IExecuteFunctions, inputDataFieldName: string, index: number = 0): Promise<any> {
 		const binaryData = this.helpers.assertBinaryData(index, inputDataFieldName);
 		if (!binaryData){
-			throw new Error('未找到二进制数据');
+			throw new NodeOperationError(this.getNode(), '未找到二进制数据');
 		}
-		const buffer = this.helpers.getBinaryDataBuffer(index, inputDataFieldName);
+		const buffer = await this.helpers.getBinaryDataBuffer(index, inputDataFieldName);
 
 		return {
 			value: buffer,

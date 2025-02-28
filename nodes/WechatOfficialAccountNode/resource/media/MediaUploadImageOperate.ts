@@ -27,7 +27,7 @@ const MediaUploadImageOperate: ResourceOperations = {
 			url: `/cgi-bin/media/uploadimg`,
 			json: false,
 			formData: {
-				media: NodeUtils.buildUploadFileData.call(this, inputDataFieldName, index),
+				media: await NodeUtils.buildUploadFileData.call(this, inputDataFieldName, index),
 			},
 		});
 	},
