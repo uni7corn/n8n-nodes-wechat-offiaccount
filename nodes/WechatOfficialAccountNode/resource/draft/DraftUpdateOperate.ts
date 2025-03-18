@@ -1,6 +1,7 @@
 import { IDataObject, IExecuteFunctions } from 'n8n-workflow';
 import RequestUtils from '../../../help/utils/RequestUtils';
 import { ResourceOperations } from '../../../help/type/IResource';
+import NodeUtils from "../../../help/utils/NodeUtils";
 
 const DraftUpdateOperate: ResourceOperations = {
 	name: '修改草稿',
@@ -23,7 +24,7 @@ const DraftUpdateOperate: ResourceOperations = {
 			description: '要更新的文章在图文消息中的位置（多图文消息时，此字段才有意义），第一篇为0',
 		},
 		{
-			displayName: '草稿内容',
+			displayName: '草稿对象(Articles)内容',
 			name: 'articles',
 			type: 'json',
 			required: true,
@@ -34,7 +35,7 @@ const DraftUpdateOperate: ResourceOperations = {
 	async call(this: IExecuteFunctions, index: number): Promise<IDataObject> {
 		const media_id = this.getNodeParameter('media_id', index) as string;
 		const media_index = this.getNodeParameter('index', index) as string;
-		const articles = this.getNodeParameter('articles', index) as IDataObject;
+		const articles = NodeUtils.getNodeJsonData(this, 'articles', index) as object;
 
 		const body: IDataObject = {
 			media_id,

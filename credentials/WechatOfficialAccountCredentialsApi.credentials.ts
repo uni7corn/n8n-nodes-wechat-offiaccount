@@ -29,10 +29,8 @@ export class WechatOfficialAccountCredentialsApi implements ICredentialType {
 			displayName: 'AppSecret',
 			name: 'appsecret',
 			description: '第三方用户唯一凭证密钥',
+			// eslint-disable-next-line
 			type: 'string',
-			typeOptions: {
-				password: true,
-			},
 			default: '',
 		},
 		{

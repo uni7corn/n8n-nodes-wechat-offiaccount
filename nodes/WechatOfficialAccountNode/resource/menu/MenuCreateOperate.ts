@@ -1,6 +1,7 @@
 import { IDataObject, IExecuteFunctions } from 'n8n-workflow';
 import RequestUtils from '../../../help/utils/RequestUtils';
 import { ResourceOperations } from '../../../help/type/IResource';
+import NodeUtils from "../../../help/utils/NodeUtils";
 
 const MenuCreateOperate: ResourceOperations = {
 	name: '创建',
@@ -18,7 +19,7 @@ const MenuCreateOperate: ResourceOperations = {
 		},
 	],
 	async call(this: IExecuteFunctions, index: number): Promise<IDataObject> {
-		const data = this.getNodeParameter('data', index, '') as IDataObject;
+		const data = NodeUtils.getNodeJsonData(this, 'data', index) as object;
 
 		return RequestUtils.request.call(this, {
 			method: 'POST',

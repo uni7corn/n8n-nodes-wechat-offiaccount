@@ -1,6 +1,7 @@
 import { IDataObject, IExecuteFunctions } from 'n8n-workflow';
 import RequestUtils from '../../../help/utils/RequestUtils';
 import { ResourceOperations } from '../../../help/type/IResource';
+import NodeUtils from "../../../help/utils/NodeUtils";
 
 const TemplateSendOperate: ResourceOperations = {
 	name: '发送模板消息',
@@ -71,7 +72,7 @@ const TemplateSendOperate: ResourceOperations = {
 	async call(this: IExecuteFunctions, index: number): Promise<IDataObject> {
 		const touser = this.getNodeParameter('touser', index) as string;
 		const template_id = this.getNodeParameter('template_id', index) as string;
-		const data = this.getNodeParameter('data', index) as IDataObject;
+		const data = NodeUtils.getNodeJsonData(this, 'data', index) as object;
 
 		const body: IDataObject = {
 			touser,

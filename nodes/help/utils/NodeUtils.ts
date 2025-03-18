@@ -34,6 +34,19 @@ class NodeUtils {
 			},
 		};
 	}
+
+	static getNodeJsonData(data: IExecuteFunctions, propertyName: string, index: number, failValue?: any): any {
+		const text = data.getNodeParameter(propertyName, index, failValue);
+		if (!text) {
+			return failValue;
+		}
+		try {
+			// @ts-ignore
+			return JSON.parse(text);
+		} catch (e) {
+			throw new NodeOperationError(data.getNode(), `无法解析字段[${propertyName}] JSON 数据: ${e.message}`);
+		}
+	}
 }
 
 export default NodeUtils;
