@@ -90,6 +90,7 @@ export class WechatOfficialAccountNode implements INodeType {
 						},
 						pairedItem: itemIndex,
 					});
+					continue
 				} else {
 					throw new NodeOperationError(this.getNode(), error, {
 						message: error.message,
