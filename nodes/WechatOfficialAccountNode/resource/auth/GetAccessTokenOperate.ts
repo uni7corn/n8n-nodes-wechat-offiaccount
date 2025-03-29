@@ -3,7 +3,7 @@ import { ResourceOperations } from '../../../help/type/IResource';
 import RequestUtils from '../../../help/utils/RequestUtils';
 
 export default {
-	name: '获取',
+	name: '获取AccessToken',
 	value: 'auth:getAccessToken',
 	options: [],
 	async call(this: IExecuteFunctions, index: number): Promise<IDataObject> {
