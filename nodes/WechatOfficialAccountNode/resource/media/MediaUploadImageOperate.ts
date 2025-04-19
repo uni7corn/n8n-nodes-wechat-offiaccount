@@ -4,8 +4,9 @@ import NodeUtils from '../../../help/utils/NodeUtils';
 import { ResourceOperations } from '../../../help/type/IResource';
 
 const MediaUploadImageOperate: ResourceOperations = {
-	name: '上传永久素材',
+	name: '上传图文消息内的图片',
 	value: 'media:uploadImage',
+	description: "本接口所上传的图片不占用公众号的素材库中图片数量的100000个的限制。图片仅支持jpg/png格式，大小必须在1MB以下。",
 	options: [
 		{
 			displayName: '文件',
