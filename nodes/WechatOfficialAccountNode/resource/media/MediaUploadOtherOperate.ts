@@ -66,8 +66,6 @@ export default {
 	],
 	async call(this: IExecuteFunctions, index: number): Promise<IDataObject> {
 		const type = this.getNodeParameter('type', index) as string;
-		const videoTitle = this.getNodeParameter('videoTitle', index) as string;
-		const videoIntroduction = this.getNodeParameter('videoIntroduction', index) as string;
 		const inputDataFieldName = this.getNodeParameter('inputDataFieldName', index) as string;
 
 		const formData : IDataObject = {
@@ -75,6 +73,8 @@ export default {
 		}
 
 		if (type === 'video') {
+			const videoTitle = this.getNodeParameter('videoTitle', index) as string;
+			const videoIntroduction = this.getNodeParameter('videoIntroduction', index) as string;
 			formData.description = JSON.stringify({
 				title: videoTitle,
 				introduction: videoIntroduction
