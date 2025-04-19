@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-wechat-offiaccount",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "wechat offiaccount node",
   "keywords": [
     "n8n-community-node-package",
