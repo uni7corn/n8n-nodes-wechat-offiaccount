@@ -15,7 +15,9 @@ export class WechatOfficialAccountTrigger implements INodeType {
 		defaults: {
 			name: 'Wechat Official Account Trigger',
 		},
+		// @ts-ignore
 		inputs: [],
+		// @ts-ignore
 		outputs: ['main'],
 		credentials: [
 			{
@@ -66,13 +68,13 @@ export class WechatOfficialAccountTrigger implements INodeType {
 				name: 'setup',
 				httpMethod: 'GET',
 				path: 'wechat',
-				responseMode: 'responseNode',
+				responseMode: 'responseNode'
 			},
 			{
 				name: 'default',
 				httpMethod: 'POST',
 				path: 'wechat',
-				responseMode: 'responseNode',
+				responseMode: 'responseNode'
 			},
 		],
 	};

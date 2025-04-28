@@ -21,7 +21,9 @@ export class WechatOfficialAccountResponseNode implements INodeType {
 		defaults: {
 			name: 'Wechat Official Account Response',
 		},
+		// @ts-ignore
 		inputs: ['main'],
+		// @ts-ignore
 		outputs: ['main'],
 		properties: [
 			{
