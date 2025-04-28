@@ -30,7 +30,10 @@ export class WechatOfficialAccountNode implements INodeType {
 		defaults: {
 			name: 'Wechat Official Account Node',
 		},
+		usableAsTool: true,
+		// @ts-ignore
 		inputs: ['main'],
+		// @ts-ignore
 		outputs: ['main'],
 		credentials: [
 			{
