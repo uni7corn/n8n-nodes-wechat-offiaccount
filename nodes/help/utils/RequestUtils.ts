@@ -1,6 +1,7 @@
 import { IExecuteFunctions, NodeOperationError } from 'n8n-workflow';
 import { IRequestOptions } from 'n8n-workflow/dist/Interfaces';
 
+
 class RequestUtils {
 	static async originRequest(
 		this: IExecuteFunctions,
@@ -8,6 +9,8 @@ class RequestUtils {
 		clearAccessToken = false,
 	) {
 		const credentials = await this.getCredentials('wechatOfficialAccountCredentialsApi');
+
+		options.baseURL = `https://${credentials.baseUrl}`;
 
 		return this.helpers.requestWithAuthentication.call(this, 'wechatOfficialAccountCredentialsApi', options, {
 			// @ts-ignore

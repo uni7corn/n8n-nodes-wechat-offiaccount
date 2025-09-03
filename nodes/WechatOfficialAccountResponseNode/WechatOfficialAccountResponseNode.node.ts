@@ -1,13 +1,13 @@
 import {
 	IExecuteFunctions,
-	IN8nHttpFullResponse,
 	INodeType,
 	INodeTypeDescription,
-	NodeOperationError, NodeTypeAndVersion,
+	NodeOperationError,
+	NodeTypeAndVersion,
 } from 'n8n-workflow';
 import { INodeExecutionData } from 'n8n-workflow/dist/Interfaces';
 import WechatMsgSignUtils from '../help/utils/WechatMsgSignUtils';
-import xmlConvert from "xml-js";
+import xmlConvert from 'xml-js';
 
 export class WechatOfficialAccountResponseNode implements INodeType {
 	description: INodeTypeDescription = {
@@ -15,12 +15,13 @@ export class WechatOfficialAccountResponseNode implements INodeType {
 		name: 'wechatOfficialAccountResponseNode',
 		// eslint-disable-next-line n8n-nodes-base/node-class-description-icon-not-svg
 		icon: 'file:icon.png',
-		description: "Wechat Official Account Response",
+		description: 'Wechat Official Account Response',
 		group: ['transform'],
 		version: 1,
 		defaults: {
 			name: 'Wechat Official Account Response',
 		},
+		hint: '用于处理微信公众号的响应数据，请最后使用response节点进行响应',
 		// @ts-ignore
 		inputs: ['main'],
 		// @ts-ignore
@@ -52,7 +53,7 @@ export class WechatOfficialAccountResponseNode implements INodeType {
 				displayOptions: {
 					show: {
 						dataFormat: ['xml'],
-					}
+					},
 				},
 			},
 			{
@@ -64,17 +65,17 @@ export class WechatOfficialAccountResponseNode implements INodeType {
 				displayOptions: {
 					show: {
 						dataFormat: ['json'],
-					}
+					},
 				},
 				required: true,
 			},
-		]
+		],
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const parentNodes = this.getParentNodes(this.getNode().name);
-		const trigger = parentNodes.find(
-			(node) => node.type.includes('wechatOfficialAccountTrigger'),
+		const trigger = parentNodes.find((node) =>
+			node.type.includes('wechatOfficialAccountTrigger'),
 		) as NodeTypeAndVersion;
 		if (!trigger) {
 			throw new NodeOperationError(
@@ -93,46 +94,48 @@ export class WechatOfficialAccountResponseNode implements INodeType {
 
 		const signatureType = workflowData?.signatureType as string;
 		let body: any;
-		let data: any;
-		if (signatureType === 'aes'){
+		if (signatureType === 'aes') {
 			const token = workflowData.token as string;
 			const aesKey = workflowData.aesKey as string;
 			const appId = workflowData.appId as string;
-			data = WechatMsgSignUtils.encryptResponse(content, aesKey, token, appId);
-			body = data;
+			body = WechatMsgSignUtils.encryptResponse(content, aesKey, token, appId);
 
 			if (dataFormat === 'xml') {
-				body = xmlConvert.js2xml({
-					xml: body
-				}, {
-					indentCdata: true,
-					compact: true,
-					ignoreComment: true,
-					spaces: 4,
-					textFn: (value: any, currentElementName: string, currentElementObj: any) => {
-						if (typeof currentElementObj !== 'string') return value
-						return `<![CDATA[${value}]]>`
-					}
-				})
+				body = xmlConvert.js2xml(
+					{
+						xml: body,
+					},
+					{
+						indentCdata: true,
+						compact: true,
+						ignoreComment: true,
+						spaces: 4,
+						textFn: (value: any, currentElementName: string, currentElementObj: any) => {
+							if (typeof currentElementObj !== 'string') return value;
+							return `<![CDATA[${value}]]>`;
+						},
+					},
+				);
 			}
-		}else{
+		} else {
 			// 明文
 			body = content;
-			data = {
-				content: content,
-			}
 		}
 
-		const response: IN8nHttpFullResponse = {
-			headers: {},
+		let headers = {} as any
+		if (dataFormat === 'xml'){
+			headers['Content-Type'] = 'application/xml'
+		}
+
+		this.sendResponse({
+			headers: headers,
 			statusCode: 200,
 			body: body,
-		};
+		})
 
-		console.log('sendResponse', response);
 
-		this.sendResponse(response);
-
-		return [this.helpers.returnJsonArray(data)];
+		return [this.helpers.returnJsonArray({
+			body: body
+		})];
 	}
 }

@@ -1,11 +1,12 @@
 import {
+	IAuthenticateGeneric,
 	ICredentialDataDecryptedObject,
 	ICredentialTestRequest,
 	ICredentialType,
 	IHttpRequestHelper,
 	INodeProperties,
 } from 'n8n-workflow';
-import { IHttpRequestOptions } from 'n8n-workflow/dist/Interfaces';
+
 
 export class WechatOfficialAccountCredentialsApi implements ICredentialType {
 	name = 'wechatOfficialAccountCredentialsApi';
@@ -24,6 +25,7 @@ export class WechatOfficialAccountCredentialsApi implements ICredentialType {
 			name: 'appid',
 			type: 'string',
 			default: '',
+			required: true,
 		},
 		{
 			displayName: 'AppSecret',
@@ -32,12 +34,14 @@ export class WechatOfficialAccountCredentialsApi implements ICredentialType {
 			// eslint-disable-next-line
 			type: 'string',
 			default: '',
+			required: true,
 		},
 		{
 			displayName: 'AccessToken',
 			name: 'accessToken',
 			type: 'hidden',
 			default: '',
+			// eslint-disable-next-line n8n-nodes-base/cred-class-field-type-options-password-missing
 			typeOptions: {
 				expirable: true,
 			},
@@ -45,21 +49,21 @@ export class WechatOfficialAccountCredentialsApi implements ICredentialType {
 	];
 
 	async preAuthentication(this: IHttpRequestHelper, credentials: ICredentialDataDecryptedObject) {
-		console.log('credentials', credentials);
-		if (credentials.accessToken) {
-			// 验证是否正常，正常直接使用即可
-			const res = (await this.helpers.httpRequest({
-				method: 'GET',
-				url: `https://${credentials.baseUrl}/cgi-bin/get_api_domain_ip?access_token=${credentials.accessToken}`,
-			})) as any;
-
-			console.log('exist accessToken', res);
-			// accesstoken过期了
-			if (res.errcode === 42001) {
-			} else if (res.errcode !== 0) {
-				throw new Error('请求失败：' + res.errcode + ', ' + res.errmsg);
-			}
-		}
+		console.log('preAuthentication credentials', credentials);
+		// if (credentials.accessToken) {
+		// 	// 验证是否正常，正常直接使用即可
+		// 	const res = (await this.helpers.httpRequest({
+		// 		method: 'GET',
+		// 		url: `https://${credentials.baseUrl}/cgi-bin/get_api_domain_ip?access_token=${credentials.accessToken}`,
+		// 	})) as any;
+		//
+		// 	console.log('exist accessToken', res);
+		// 	// accesstoken过期了
+		// 	if (res.errcode === 42001) {
+		// 	} else if (res.errcode !== 0) {
+		// 		throw new Error('请求失败：' + res.errcode + ', ' + res.errmsg);
+		// 	}
+		// }
 
 		const res = (await this.helpers.httpRequest({
 			method: 'GET',
@@ -76,24 +80,33 @@ export class WechatOfficialAccountCredentialsApi implements ICredentialType {
 	}
 
 
-	async authenticate(
-		credentials: ICredentialDataDecryptedObject,
-		requestOptions: IHttpRequestOptions,
-	): Promise<IHttpRequestOptions> {
-		requestOptions.baseURL = `https://${credentials.baseUrl}`;
-		requestOptions.qs = {
-			...(requestOptions.qs || {}),
-			access_token: credentials.accessToken,
-		};
-		// requestOptions.proxy = {
-		// 	host: '127.0.0.1',
-		// 	port: 8000,
-		// 	protocol: 'http',
-		// };
-		// requestOptions.skipSslCertificateValidation = true;
+	authenticate: IAuthenticateGeneric = {
+		type: 'generic',
+		properties: {
+			qs: {
+				access_token: '={{$credentials.accessToken}}',
+			},
+		},
+	};
 
-		return requestOptions;
-	}
+	// async authenticate(
+	// 	credentials: ICredentialDataDecryptedObject,
+	// 	requestOptions: IHttpRequestOptions,
+	// ): Promise<IHttpRequestOptions> {
+	// 	requestOptions.baseURL = `https://${credentials.baseUrl}`;
+	// 	requestOptions.qs = {
+	// 		...(requestOptions.qs || {}),
+	// 		access_token: credentials.accessToken,
+	// 	};
+	// 	// requestOptions.proxy = {
+	// 	// 	host: '127.0.0.1',
+	// 	// 	port: 8000,
+	// 	// 	protocol: 'http',
+	// 	// };
+	// 	// requestOptions.skipSslCertificateValidation = true;
+	//
+	// 	return requestOptions;
+	// }
 
 	// The block below tells how this credential can be tested
 	test: ICredentialTestRequest = {

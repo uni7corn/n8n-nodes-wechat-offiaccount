@@ -25,7 +25,7 @@ export default {
 			required: true,
 		},
 		{
-			displayName: '文件',
+			displayName: '文件Binary字段名',
 			name: 'inputDataFieldName',
 			type: 'string',
 			placeholder: 'e.g. data',

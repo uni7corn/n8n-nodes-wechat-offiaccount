@@ -1,63 +1,279 @@
-# Features
-## User tags
-- Edit tags
-- Get the fan list under the tag
-- Get the tag list
-- Get the tag list of the user
-- Delete tags
-- Create tags
-- Untag users in batches
-- Tag users in batches
-## User
-- Set user note name
-- Get user list
-- Get user information
-- Get blacklist list
-- Unblock users
-- Blacklist users
-## Template
-- Send template message
-- Get template list
-- Delete template
-## Publish
-- Publish draft
-- Publish status polling
-- Get the list of successful publishes
-- Get published articles
-- Delete publish
-## Others
-- Generate short key
-- Get long information
-- Generate QR code with parameters
-## Menu
-- Query
-- Get current menu configuration
-- Delete
-- Create
-## Material
-- Upload temporary material
-- Upload permanent material
-- Get material list
-- Get temporary material
-- Get permanent material
-- Delete permanent materials
-- Get total materials
-## Drafts
-- Modify drafts
-- Get draft list
-- Get drafts
-- Delete drafts
-- Get total drafts
-- Create new drafts
-## Comments
-- Unselect
-- Delete replies
-- Reply to comments
-- Open comments
-- Mark selected
-- View comments
-- Delete comments
-- Close comments
+# 使用案例
+
+## URL验证案例
+```json
+{
+  "nodes": [
+    {
+      "parameters": {
+        "path": "1d476f93-cc5b-431e-96a5-71111846e39d",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -620,
+        -140
+      ],
+      "id": "21c66249-0213-4c84-9495-219b6fdcd41c",
+      "name": "Webhook",
+      "webhookId": "1d476f93-cc5b-431e-96a5-71111846e39d"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $('Webhook').item.json.query.echostr }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -260,
+        -140
+      ],
+      "id": "013fc8c7-4261-4a4e-875c-e65305bd2167",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "content": "## URL验证",
+        "height": 240,
+        "width": 940
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        -220
+      ],
+      "id": "5d24d3e0-001c-4709-8932-ffb331f89e40",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "02b4f549b31e5afb7ac0434f27e8e1e51494096eb26622aff0d1c16686021c54"
+  }
+}
+```
+
+## 明文消息回复案例
+```json
+{
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "=<xml>\n  <ToUserName><![CDATA[{{ $('Webhook1').item.json.body.xml.fromusername }}]]></ToUserName>\n  <FromUserName><![CDATA[{{ $('Webhook1').item.json.body.xml.tousername }}]]></FromUserName>\n  <CreateTime>{{ $('Webhook1').item.json.body.xml.createtime }}</CreateTime>\n  <MsgType><![CDATA[text]]></MsgType>\n  <Content><![CDATA[用户发送：{{ $('Webhook1').item.json.body.xml.content }}]]></Content>\n</xml>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -140,
+        100
+      ],
+      "id": "114d02ef-ec8d-4386-8e3c-824fba7883e1",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "1d476f93-cc5b-431e-96a5-71111846e39d",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -620,
+        100
+      ],
+      "id": "32abe73e-bb72-4aaf-8ae1-df35c0847a19",
+      "name": "Webhook1",
+      "webhookId": "1d476f93-cc5b-431e-96a5-71111846e39d"
+    }
+  ],
+  "connections": {
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "02b4f549b31e5afb7ac0434f27e8e1e51494096eb26622aff0d1c16686021c54"
+  }
+}
+```
+
+## AES加密消息回复案例
+```json
+{
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        300,
+        340
+      ],
+      "id": "cf53af1f-c5db-42d6-9cbb-702cab656739",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "content": "## 收到加密消息",
+        "height": 220,
+        "width": 940
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        280
+      ],
+      "id": "e92f2655-f801-4e67-888f-5a89ce3de0b2",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "1d476f93-cc5b-431e-96a5-71111846e39d",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -620,
+        340
+      ],
+      "id": "bdf2bfef-4770-4972-a7b8-9051005800fa",
+      "name": "Webhook2",
+      "webhookId": "1d476f93-cc5b-431e-96a5-71111846e39d"
+    },
+    {
+      "parameters": {
+        "resource": "sign",
+        "operation": "sign:decrypt",
+        "signature": "={{ $json.query.signature }}",
+        "timestamp": "={{ $json.query.timestamp }}",
+        "nonce": "={{ $json.query.nonce }}",
+        "encrypt_type": "={{ $json.query.encrypt_type }}",
+        "encrypt_str": "={{ $json.body.xml.encrypt }}",
+        "token": "xxxxxxxxx",
+        "aesKey": "xxxxxxxx"
+      },
+      "type": "CUSTOM.wechatOfficialAccountNode",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        340
+      ],
+      "id": "6ea59c79-c04e-4500-91cc-5b63ea8e10a6",
+      "name": "消息解密",
+      "credentials": {
+        "wechatOfficialAccountCredentialsApi": {
+          "id": "POmYAAOAHjQ4kTJG",
+          "name": "BL公众号"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "sign",
+        "operation": "sign:encrypt",
+        "content": "=<xml>\n  <ToUserName><![CDATA[{{ $json.fromusername }}]]></ToUserName>\n  <FromUserName><![CDATA[{{ $json.tousername }}]]></FromUserName>\n  <CreateTime>{{ $json.createtime }}</CreateTime>\n  <MsgType><![CDATA[text]]></MsgType>\n  <Content><![CDATA[用户发送：{{ $json.content }}]]></Content>\n</xml> ",
+        "token": "xxxxxxxx",
+        "aesKey": "xxxxxxxx"
+      },
+      "type": "CUSTOM.wechatOfficialAccountNode",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        340
+      ],
+      "id": "c58d7a58-6ea1-47da-a3d0-0293ce28b25a",
+      "name": "消息加密",
+      "credentials": {
+        "wechatOfficialAccountCredentialsApi": {
+          "id": "POmYAAOAHjQ4kTJG",
+          "name": "BL公众号"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook2": {
+      "main": [
+        [
+          {
+            "node": "消息解密",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "消息解密": {
+      "main": [
+        [
+          {
+            "node": "消息加密",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "消息加密": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "02b4f549b31e5afb7ac0434f27e8e1e51494096eb26622aff0d1c16686021c54"
+  }
+}
+```
 
 # 功能
 ## 用户标签
