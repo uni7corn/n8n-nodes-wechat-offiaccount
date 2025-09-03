@@ -275,6 +275,49 @@
 }
 ```
 
+## request 节点引用凭证
+> 注意：请提前调用该凭证下的其他节点，直接使用request可能凭证是过期的
+```json
+{
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.weixin.qq.com/cgi-bin/material/get_materialcount",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wechatOfficialAccountCredentialsApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        340
+      ],
+      "id": "1b23baa1-64ea-49eb-a7a0-611240bd6d43",
+      "name": "HTTP Request",
+      "credentials": {
+        "wechatOfficialAccountCredentialsApi": {
+          "id": "POmYAAOAHjQ4kTJG",
+          "name": "BL公众号"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "02b4f549b31e5afb7ac0434f27e8e1e51494096eb26622aff0d1c16686021c54"
+  }
+}
+```
+
 # 功能
 ## 用户标签
 - 编辑标签
